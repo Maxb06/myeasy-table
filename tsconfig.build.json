@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      "target": "ES2020",
+      "lib": ["ES2020", "DOM", "DOM.Iterable"],
+      "module": "ESNext",
+      "moduleResolution": "node",
+      "declaration": true,
+      "outDir": "dist/types", 
+      "declarationDir": "dist/types",
+      "jsx": "react-jsx",
+      "strict": true,
+      "skipLibCheck": true, 
+    },
+    "include": ["src/**/*", "src/global.d.ts"]
+  }
+  
