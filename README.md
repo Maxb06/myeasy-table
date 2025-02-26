@@ -8,7 +8,7 @@
 ## 🚀 Installation
 
 ```bash
-npm install max-table
+npm install myeasy-table
 
 📌 Usage
 
