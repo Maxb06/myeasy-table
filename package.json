@@ -1,6 +1,6 @@
 {
   "name": "myeasy-table",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "MIT",
   "description": "A customizable and lightweight React table component with sorting, pagination, and search features.",
   "author": "Maxb06 - Maxime Brunet",
@@ -28,7 +28,8 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "dist/myeasy-table.css"
   ],
   "dependencies": {
     "react": "^19.0.0",
