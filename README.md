@@ -43,7 +43,15 @@ const MyComponent = () => (
 
 
 🎨 Custom Styling
-You can modify styles using CSS modules by overriding DataTable.module.css or adding your own styles.
+By default, myeasy-table comes with its own styles.
+If you want to customize them, simply override myeasy-table.css in your project.
+
+Example:
+/* Custom styles */
+.table {
+  background-color: lightgray; /* Example: Change table background */
+  border-radius: 10px;
+}
 
 🔥 Advanced Example
 With row click handling and row deletion:
@@ -64,14 +72,6 @@ const handleDelete = (id) => {
   sortable 
   pagination 
 />
-
-📌 Styles
-By default, `myeasy-table` comes with its own styles.  
-If you want to customize them, you can override `myeasy-table.css`:
-```css
-.table {
-  background-color: lightgray; /* Example customization */
-}
 
 📜 License
 This project is licensed under the MIT License.
