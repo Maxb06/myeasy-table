@@ -24,7 +24,6 @@ const DataTable = <T extends { id: string }>({
   onRowClick,
   onDelete,
 }: DataTableProps<T>) => {
-  // states
   const [search, setSearch] = useState('');
   const [entries, setEntries] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -96,7 +95,6 @@ const DataTable = <T extends { id: string }>({
 
   return (
     <div className={styles.container}>
-      {/* Search bar - input select */}
       <div className={styles.header}>
         <label>
           Show
@@ -112,7 +110,6 @@ const DataTable = <T extends { id: string }>({
         <input type="text" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
 
-      {/* Tableau */}
       <table className={styles.table}>
         <thead>
           <tr>
@@ -153,7 +150,6 @@ const DataTable = <T extends { id: string }>({
         </tbody>
       </table>
 
-      {/* Pagination */}
       {pagination && (
         <div className={styles.footer}>
           <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} disabled={currentPage === 1}>
