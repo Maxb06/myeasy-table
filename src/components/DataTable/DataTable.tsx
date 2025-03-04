@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
-import styles from './DataTable.module.css';
+import { useState, useEffect, ReactNode } from "react";
+import styles from "./DataTable.module.css";
 
 interface ColumnDef<T> {
   key: keyof T;
   label: string;
   sortable?: boolean;
+  render?: (value: T[keyof T], row: T) => ReactNode;
 }
 
 interface DataTableProps<T> {
@@ -17,52 +18,45 @@ interface DataTableProps<T> {
 }
 
 const DataTable = <T extends { id: string }>({
-  data,
+  data = [],
   columns,
   sortable = true,
   pagination = true,
   onRowClick,
   onDelete,
 }: DataTableProps<T>) => {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [entries, setEntries] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const [filteredData, setFilteredData] = useState<T[]>(data);
-  const [sortConfig, setSortConfig] = useState<{ key: keyof T | null; direction: 'asc' | 'desc' }>({
+  const [filteredData, setFilteredData] = useState<T[]>([]);
+
+  const [sortConfig, setSortConfig] = useState<{ key: keyof T | null; direction: "asc" | "desc" }>({
     key: null,
-    direction: 'asc',
+    direction: "asc",
   });
 
   useEffect(() => {
+    if (!data || !Array.isArray(data)) {
+      setFilteredData([]);
+      return;
+    }
+
     let result = data.filter((item) =>
-      Object.values(item).some((val) =>
-        val?.toString().toLowerCase().includes(search.toLowerCase())
-      )
+      Object.values(item).some((val) => val?.toString().toLowerCase().includes(search.toLowerCase()))
     );
 
     if (sortable && sortConfig.key) {
       result = [...result].sort((a, b) => {
-        const aValue: unknown = a[sortConfig.key!];
-        const bValue: unknown = b[sortConfig.key!];
+        const aValue = a[sortConfig.key!];
+        const bValue = b[sortConfig.key!];
 
-        const isNumeric = (val: unknown): boolean =>
-          typeof val === "number" || (typeof val === "string" && !isNaN(parseFloat(val)));
-
-        const extractNumber = (val: unknown): number =>
-          typeof val === "string" ? parseFloat(val.replace(/[^0-9.]/g, "")) : (val as number);
-
-        if (isNumeric(aValue) && isNumeric(bValue)) {
-          const numA = extractNumber(aValue);
-          const numB = extractNumber(bValue);
-          return sortConfig.direction === "asc" ? numA - numB : numB - numA;
+        if (typeof aValue === "number" && typeof bValue === "number") {
+          return sortConfig.direction === "asc" ? aValue - bValue : bValue - aValue;
         }
 
-        const strA = aValue !== undefined ? String(aValue) : "";
-        const strB = bValue !== undefined ? String(bValue) : "";
-
-        return sortConfig.direction === "asc"
-          ? strA.localeCompare(strB)
-          : strB.localeCompare(strA);
+        const strA = String(aValue);
+        const strB = String(bValue);
+        return sortConfig.direction === "asc" ? strA.localeCompare(strB) : strB.localeCompare(strA);
       });
     }
 
@@ -78,15 +72,14 @@ const DataTable = <T extends { id: string }>({
 
     setSortConfig((prev) => {
       if (prev.key === key) {
-        if (prev.direction === 'asc') {
-          return { key, direction: 'desc' };
+        if (prev.direction === "asc") {
+          return { key, direction: "desc" };
         }
-        return { key: null, direction: 'asc' };
+        return { key: null, direction: "asc" };
       }
-      return { key, direction: 'asc' };
+      return { key, direction: "asc" };
     });
   };
-
 
   const indexOfLastItem = currentPage * entries;
   const indexOfFirstItem = indexOfLastItem - entries;
@@ -103,7 +96,7 @@ const DataTable = <T extends { id: string }>({
             <option value={25}>25</option>
             <option value={50}>50</option>
             <option value={100}>100</option>
-          </select>{' '}
+          </select>{" "}
           entries
         </label>
 
@@ -114,13 +107,11 @@ const DataTable = <T extends { id: string }>({
         <thead>
           <tr>
             {columns.map((col) => (
-              <th key={col.key.toString()} onClick={() => col.sortable && requestSort(col.key)}>
+              <th key={String(col.key)} onClick={() => col.sortable && requestSort(col.key)}>
                 {col.label}
                 {sortable && col.sortable && (
                   <>
-                    {sortConfig.key === col.key ? (
-                      sortConfig.direction === 'asc' ? ' ▲' : ' ▼'
-                    ) : null}
+                    {sortConfig.key === col.key ? (sortConfig.direction === "asc" ? " ▲" : " ▼") : null}
                   </>
                 )}
               </th>
@@ -133,7 +124,9 @@ const DataTable = <T extends { id: string }>({
             currentItems.map((item) => (
               <tr key={item.id} onClick={() => onRowClick?.(item)}>
                 {columns.map((col) => (
-                  <td key={col.key.toString()}>{String(item[col.key])}</td>
+                  <td key={String(col.key)}>
+                    {col.render ? col.render(item[col.key], item) : String(item[col.key] ?? "N/A")}
+                  </td>
                 ))}
                 {onDelete && (
                   <td>
@@ -156,7 +149,10 @@ const DataTable = <T extends { id: string }>({
             Previous
           </button>
           <span>{currentPage}</span>
-          <button onClick={() => setCurrentPage((prev) => prev < totalPages ? prev + 1 : prev)} disabled={currentPage >= totalPages}>
+          <button
+            onClick={() => setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev))}
+            disabled={currentPage >= totalPages}
+          >
             Next
           </button>
         </div>
