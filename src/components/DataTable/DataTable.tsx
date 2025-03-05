@@ -1,5 +1,5 @@
 import { useState, useEffect, ReactNode } from "react";
-import styles from "./DataTable.module.css";
+import "./DataTable.css";
 
 interface ColumnDef<T> {
   key: keyof T;
@@ -87,8 +87,8 @@ const DataTable = <T extends { id: string }>({
   const totalPages = pagination ? Math.ceil(filteredData.length / entries) : 1;
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
+    <div className="container">
+      <div className="header">
         <label>
           Show
           <select value={entries} onChange={(e) => setEntries(Number(e.target.value))}>
@@ -103,7 +103,7 @@ const DataTable = <T extends { id: string }>({
         <input type="text" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
 
-      <table className={styles.table}>
+      <table className="table">
         <thead>
           <tr>
             {columns.map((col) => (
@@ -144,7 +144,7 @@ const DataTable = <T extends { id: string }>({
       </table>
 
       {pagination && (
-        <div className={styles.footer}>
+        <div className="footer">
           <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} disabled={currentPage === 1}>
             Previous
           </button>
